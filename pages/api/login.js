@@ -1,35 +1,36 @@
-import User from '@/helper/Users';
-import connectDB from '@/utils/db';
-
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-const db = connectDB();
+import User from "@/helper/Users";
+import connectDB from "@/utils/db";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
-    if (req.method === 'POST') { return }
-        const { email, password } = req.body;
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
-        try {
-            // Find user by email
-            const user = await User.findOne({ email });
-            if (!user) {
-                return res.status(400).json({ success: false, message: 'Invalid credentials' });
-            }
+  try {
+ 
 
-            // Check password
-            const isPasswordMatch = await bcrypt.compare(password, user.password);
-            if (!isPasswordMatch) {
-                return res.status(400).json({ success: false, message: 'Invalid credentials' });
-            }
+    const { email, password } = req.body;
 
-            // Generate JWT token
-            const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid credentials" });
+    }
 
-            res.status(200).json({ success: true, token });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: 'Server Error' });
-        }
-   
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({ success: false, message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, "your-secret-key", {
+        
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({ success: true, token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
 }

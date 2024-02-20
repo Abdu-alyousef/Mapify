@@ -2,15 +2,17 @@ import User from "@/helper/Users";
 import connectDB from "@/utils/db";
 import bcrypt from "bcrypt";
 
-const db = connectDB();
+
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return;
   }
+  const db = connectDB();
   const { name, email, password } = req.body;
 
   try {
+    
     let user = await User.findOne({ email });
     if (user) {
       return res

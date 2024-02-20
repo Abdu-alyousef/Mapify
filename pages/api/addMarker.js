@@ -1,29 +1,37 @@
+
 import connectDB from "@/utils/db";
 import Marker from "@/helper/Marker";
 
-const db = connectDB();
+
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return
+    return;
   }
-  try {
-    const { name, title, desc, latitude, longitude } = req.body;
 
-    const userId = req.user._id; 
+  try {
+    
+    const db = await connectDB();
+
+  
+    const { name, title, desc, latitude, longitude, rating } = req.body;
 
     const newMarker = new Marker({
-      userId,
       name,
       title,
       desc,
       latitude,
       longitude,
+      rating,
     });
+
+    // Save the new marker to the database
     await newMarker.save();
 
+    // Respond with the newly created marker
     res.status(201).json(newMarker);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error);
+    res.status(500).json({message: "Server Error" });
   }
 }

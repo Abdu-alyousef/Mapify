@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 const MarkerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -21,14 +22,14 @@ const MarkerSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  rating: {
+    type: Number,
     required: true,
-},
+  }
 }, {
-  timestamps: true
+  timestamps: true 
 });
+
 
 const Marker = mongoose.models.Marker || mongoose.model('Marker', MarkerSchema);
 
