@@ -1,5 +1,4 @@
 import User from "@/helper/Users";
-import connectDB from "@/utils/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -9,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
- 
+    // const db = await connectDB(); mybe i need it
 
     const { email, password } = req.body;
 
@@ -28,7 +27,12 @@ export default async function handler(req, res) {
       expiresIn: "1h",
     });
 
-    res.status(200).json({ success: true, token });
+    const { username } = user;
+
+    // If everything is successful, return the user's information
+    res.status(200).json({ success: true, username, token });
+
+    // res.status(200).json({ success: true, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });

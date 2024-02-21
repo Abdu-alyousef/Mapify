@@ -8,8 +8,8 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return;
   }
-  const db = connectDB();
-  const { name, email, password } = req.body;
+  const db = await connectDB();
+  const { username, email, password } = req.body;
 
   try {
     
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     user = new User({
-      name,
+      username,
       email,
       password: hashedPassword,
     });
