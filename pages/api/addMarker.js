@@ -1,22 +1,28 @@
-
-import connectDB from "@/utils/db";
-import Marker from "@/helper/Marker";
-
-
+import Marker from "@/models/Marker";
+import connectToDatabase from "@/utils/db";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return;
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 
+  const { name, userId, title, desc, latitude, longitude, rating } = req.body;
+
   try {
-    
-    const db = await connectDB();
-
-  
-    const { name, title, desc, latitude, longitude, rating } = req.body;
-
+    const db = await connectToDatabase();
+    if (
+      !userId ||
+      !name ||
+      !title ||
+      !desc ||
+      !latitude ||
+      !longitude ||
+      !rating
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
     const newMarker = new Marker({
+      userId,
       name,
       title,
       desc,
@@ -24,14 +30,9 @@ export default async function handler(req, res) {
       longitude,
       rating,
     });
-
-    // Save the new marker to the database
     await newMarker.save();
-
-    // Respond with the newly created marker
-    res.status(201).json(newMarker);
+    res.status(201).json({ message: "Marker created", marker: newMarker });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({message: "Server Error" });
+    res.status(500).json({ message: "Error creating marker" });
   }
 }

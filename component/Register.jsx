@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
   });
@@ -28,7 +28,7 @@ const Register = () => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        name="name"
+        name="username"
         placeholder="Username"
         value={formData.username}
         onChange={handleChange}

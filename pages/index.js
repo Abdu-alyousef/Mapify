@@ -5,16 +5,12 @@ import axios from "axios";
 import CustomMarker from "@/component/CustomMarker";
 import CustomPopup from "@/component/CustomPopup";
 import AddMarker from "@/component/AddMarker";
-import Register from "@/component/Register";
-import AuthToggle from "@/component/AuthToggle";
-import { useAuth } from "@/component/AuthContext";
 
 const Home = ({ markers: initialMarkers }) => {
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
-  const { currentUser } = useAuth();
-
+  
   const [newPlace, setNewPlace] = useState(null);
-  const [markers, setMarkers] = useState(initialMarkers); 
+  const [markers, setMarkers] = useState(initialMarkers);
 
   const handleMarkerClick = (markerId) => {
     setCurrentPlaceId(markerId);
@@ -33,7 +29,7 @@ const Home = ({ markers: initialMarkers }) => {
 
   const handleMarkerSubmit = async (markerData) => {
     const newMarker = {
-      name: currentUser,
+      name: 'Aboud',
       title: markerData.title,
       desc: markerData.desc,
       rating: markerData.rating,
@@ -43,7 +39,7 @@ const Home = ({ markers: initialMarkers }) => {
     try {
       const Uri = "http://localhost:3000/api/addMarker";
       const res = await axios.post(Uri, newMarker);
-      setMarkers(prevMarkers => [...prevMarkers, newMarker]);
+      setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
       setNewPlace(null);
     } catch (err) {
       console.log(err);
@@ -52,8 +48,7 @@ const Home = ({ markers: initialMarkers }) => {
 
   return (
     <div>
-      <Register />
-      <AuthToggle />
+      {/* <Register /> */}
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -100,23 +95,23 @@ const Home = ({ markers: initialMarkers }) => {
 
 export default Home;
 
-export async function getServerSideProps() {
-  try {
-    const apiUrl = "http://localhost:3000/api/markers";
-    const response = await axios.get(apiUrl);
-    const markers = response.data;
+// export async function getServerSideProps() {
+//   try {
+//     const apiUrl = "http://localhost:3000/api/markers";
+//     const response = await axios.get(apiUrl);
+//     const markers = response.data;
 
-    return {
-      props: {
-        markers,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching markers:", error);
-    return {
-      props: {
-        markers: [],
-      },
-    };
-  }
-}
+//     return {
+//       props: {
+//         markers,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching markers:", error);
+//     return {
+//       props: {
+//         markers: [],
+//       },
+//     };
+//   }
+// }

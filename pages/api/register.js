@@ -1,36 +1,35 @@
-import User from "@/helper/Users";
-import connectDB from "@/utils/db";
+import User from '@/models/User';
+import connectToDatabase from '@/utils/db';
 import bcrypt from "bcrypt";
-
-
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return;
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
-  const db = await connectDB();
+
   const { username, email, password } = req.body;
 
   try {
-    
-    let user = await User.findOne({ email });
-    if (user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
+    const db = await connectToDatabase();
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({
+
+    const newUser = new User({
       username,
       email,
       password: hashedPassword,
     });
 
-    await user.save();
+    await newUser.save();
 
-    res.status(201).json(user);
+    res.status(201).json({ message: "User registered" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({message: "Server Error" });
+    console.error("Error registering user:", error);
+    res.status(500).json({ message: "Error registering user" });
   }
 }
