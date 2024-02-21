@@ -1,4 +1,5 @@
 import User from "@/helper/Users";
+import connectDB from "@/utils/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -8,31 +9,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    // const db = await connectDB(); mybe i need it
-
+    const db = await connectDB()
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ success: false, message: "Invalid credentials" });
-    }
-
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
+    if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
     const token = jwt.sign({ userId: user._id }, "your-secret-key", {
-        
       expiresIn: "1h",
     });
 
-    const { username } = user;
+    console.log(user.username)
+    
 
-    // If everything is successful, return the user's information
-    res.status(200).json({ success: true, username, token });
-
-    // res.status(200).json({ success: true, token });
+    res.status(200).json({ success: true, username: user.username, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });

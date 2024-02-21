@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Popup } from 'react-map-gl';
 
-const AddMarkerPopup = ({ newPlace, handleClosePopup, onSubmit }) => {
+const AddMarker = ({ newPlace, handleClosePopup, onSubmit }) => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [rating, setRating] = useState(1);
@@ -13,6 +13,7 @@ const AddMarkerPopup = ({ newPlace, handleClosePopup, onSubmit }) => {
     setTitle('');
     setDesc('');
     setRating(1);
+    handleClosePopup();
   };
 
   return (
@@ -56,4 +57,4 @@ const AddMarkerPopup = ({ newPlace, handleClosePopup, onSubmit }) => {
   );
 };
 
-export default AddMarkerPopup;
+export default AddMarker;

@@ -4,28 +4,31 @@ import { useState, Fragment } from "react";
 import axios from "axios";
 import CustomMarker from "@/component/CustomMarker";
 import CustomPopup from "@/component/CustomPopup";
-import AddMarkerPopup from "@/component/AddMarker";
+import AddMarker from "@/component/AddMarker";
+import Register from "@/component/Register";
+import AuthToggle from "@/component/AuthToggle";
+import { useAuth } from "@/component/AuthContext";
 
-const Home = ({ markers }) => {
+const Home = ({ markers: initialMarkers }) => {
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
-  const currentUser = "Boud";
+  const { currentUser } = useAuth();
+
   const [newPlace, setNewPlace] = useState(null);
+  const [markers, setMarkers] = useState(initialMarkers); 
 
   const handleMarkerClick = (markerId) => {
     setCurrentPlaceId(markerId);
-    console.log("Marker clicked:", markerId);
-  };
-
-  const handleAddClick = (e) => {
-    const { lng, lat } = e.lngLat;
-    setNewPlace({
-      lng,
-      lat,
-    });
+    setNewPlace(null);
   };
 
   const handleClosePopup = () => {
     setNewPlace(null);
+  };
+
+  const handleAddClick = (e) => {
+    const { lng, lat } = e.lngLat;
+    setNewPlace({ lng, lat });
+    setCurrentPlaceId(null);
   };
 
   const handleMarkerSubmit = async (markerData) => {
@@ -40,9 +43,8 @@ const Home = ({ markers }) => {
     try {
       const Uri = "http://localhost:3000/api/addMarker";
       const res = await axios.post(Uri, newMarker);
-      window.location.reload();
+      setMarkers(prevMarkers => [...prevMarkers, newMarker]);
       setNewPlace(null);
-      onClose();
     } catch (err) {
       console.log(err);
     }
@@ -50,6 +52,8 @@ const Home = ({ markers }) => {
 
   return (
     <div>
+      <Register />
+      <AuthToggle />
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -77,14 +81,13 @@ const Home = ({ markers }) => {
                 longitude={marker.longitude}
                 latitude={marker.latitude}
                 marker={marker}
-                onClose={() => setCurrentPlaceId(null)}
               />
             )}
           </Fragment>
         ))}
 
         {newPlace && (
-          <AddMarkerPopup
+          <AddMarker
             newPlace={newPlace}
             handleClosePopup={handleClosePopup}
             onSubmit={handleMarkerSubmit}
