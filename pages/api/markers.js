@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
   
     const markers = await Marker.find();
-
+    console.log(markers)
  
     res.status(200).json(markers);
   } catch (error) {

@@ -1,15 +1,17 @@
-// AddMarkerPopup.js
 import { useState } from 'react';
 import { Popup } from 'react-map-gl';
 
-const AddMarker = ({ newPlace, handleClosePopup, onSubmit }) => {
+const AddMarker = ({ newPlace,handleClosePopup, onSubmit, userId }) => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [rating, setRating] = useState(1);
 
+
+ 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ title, desc, rating });
+    onSubmit({ title, desc, rating, userId});
     setTitle('');
     setDesc('');
     setRating(1);
