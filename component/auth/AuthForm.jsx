@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import classes from "./auth-form.module.css";
 import axios from "axios";
@@ -7,14 +7,25 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { handleLogin, session } = useAuth();
+
+  useEffect(()=> {
+    const Storedsession = localStorage.getItem('token');
+    if(Storedsession){
+      
+        window.location.href = '/'
+    }else{
+      setLoading(false)
+    }
+  }, [session])
 
   function switchAuthModeHandler() {
     setIsLogin((prevState) => !prevState);
   }
 
-  const { handleLogin } = useAuth();
+
 
   const initialFormState = {
     email: "",
@@ -31,25 +42,24 @@ const AuthForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      if (isLogin) {
-        await handleLogin(formData.email, formData.password);
-        router.push("/");
-      } else {
-        const response = await axios.post("/api/register", formData);
 
-        setLoading(true);
-        
-        router.push("/");
-
-        await handleLogin(formData.email, formData.password);
-     
-
+    if (isLogin) {
+      const result = await handleLogin(formData.email, formData.password);
+      if (!result.error) {
+        router.replace("/");
+        // setLoading(false);
       }
-    } catch (error) {
-      console.log("Authentication failed");
-    } finally {
-      setLoading(false);
+    
+    } else {
+      try {
+        const response = await axios.post("/api/register", formData);
+        router.replace("/");
+        await handleLogin(formData.email, formData.password);
+      } catch (error) {
+        console.log("Authentication failed:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

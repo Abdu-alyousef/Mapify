@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -23,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     if (token && userId && username) {
       setUserId(userId);
       setUsername(username);
-      setSession(token); 
+      setSession(token);
     }
   }, []);
 
@@ -31,7 +30,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post("/api/login", { email, password });
       const { token, userId, username } = response.data;
-
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
       localStorage.setItem("userId", userId);
@@ -39,8 +37,9 @@ export const AuthProvider = ({ children }) => {
       setUserId(userId);
       setUsername(username);
       setSession(token);
+      return { userId, username, token };
     } catch (error) {
-      console.error("Login failed:", error);
+      return { error: error.response.data.message };
     }
   };
 
@@ -51,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     localStorage.removeItem("token");
-    router.push('/auth');
+    router.push("/auth");
   };
 
   const isAuthenticated = () => {
@@ -60,7 +59,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userId, username,session, handleLogin, logout, isAuthenticated }}
+      value={{
+        userId,
+        username,
+        session,
+        handleLogin,
+        logout,
+        isAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>
