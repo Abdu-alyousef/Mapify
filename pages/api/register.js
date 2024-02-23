@@ -1,5 +1,5 @@
-import User from '@/models/User';
-import connectToDatabase from '@/utils/db';
+import User from "@/models/User";
+import connectToDatabase from "@/utils/db";
 import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
@@ -29,7 +29,6 @@ export default async function handler(req, res) {
 
     res.status(201).json({ message: "User registered" });
   } catch (error) {
-    console.error("Error registering user:", error);
     res.status(500).json({ message: "Error registering user" });
   }
 }

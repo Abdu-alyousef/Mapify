@@ -1,5 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -8,41 +11,57 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [session, setSession] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    if (token && userId) {
-      setUser(userId);
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+    const userId = localStorage.getItem("userId");
+    if (token && userId && username) {
+      setUserId(userId);
+      setUsername(username);
+      setSession(token); 
     }
-  }, []); // Run once on component mount to check for initial authentication state
+  }, []);
 
   const handleLogin = async (email, password) => {
     try {
-      const response = await axios.post('/api/login', { email, password });
-      const { token, userId } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', userId);
-      setUser(userId);
+      const response = await axios.post("/api/login", { email, password });
+      const { token, userId, username } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+      localStorage.setItem("userId", userId);
+
+      setUserId(userId);
+      setUsername(username);
+      setSession(token);
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('userId');
-    localStorage.removeItem('token');
+    setUserId(null);
+    setUsername(null);
+    setSession(null);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    router.push('/auth');
   };
 
   const isAuthenticated = () => {
-    return !!user;
+    return !!userId;
   };
 
   return (
-    <AuthContext.Provider value={{ user, handleLogin, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ userId, username,session, handleLogin, logout, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

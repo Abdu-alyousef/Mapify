@@ -1,14 +1,35 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  font-family: 'Open Sans', 'Lato', sans-serif;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Lato', sans-serif;
+}
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
-html,
+/* html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-}
+} */
 
 
 .card{
@@ -19,7 +40,7 @@ body {
   justify-content: space-around;
 }
 
-label {
+.label {
   width: max-content;
   color: red;
   font-size: 13px;
@@ -27,19 +48,8 @@ label {
   margin: 3px 0;
 }
 
-.review .username {
-  font-size: 14px;
-}
 
-.star {
-  color: gold;
-}
-
-.date {
-  font-size: 12px;
-}
-
-form {
+.form {
   width: 200px;
   height: 200px;
   display: flex;
@@ -47,12 +57,12 @@ form {
     justify-content: space-between;
 }
 
-input::placeholder, textarea::placeholder, select{
+.input::placeholder, textarea::placeholder, select{
   font-size: 12px;
   color: #555;
 }
 
-input ,textarea ,select{
+.input ,textarea ,select{
   padding: 0 5px;
   border: 1px solid #555;
 }
@@ -60,3 +70,11 @@ input ,textarea ,select{
 button{
   cursor: pointer;
 }
+
+.map{
+  display: flex;
+  justify-content: center;
+}
+
+
+

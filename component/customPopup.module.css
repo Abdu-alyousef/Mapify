@@ -1,0 +1,30 @@
+
+.card{
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.card_label {
+  width: max-content;
+  color: red;
+  font-size: 13px;
+  border-bottom: .5px solid gold;
+  margin: 3px 0;
+}
+
+.review .username {
+  font-size: 14px;
+}
+
+.star {
+  color: gold;
+}
+
+.date {
+  font-size: 12px;
+}
+
+

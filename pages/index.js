@@ -4,8 +4,9 @@ import { useState, Fragment } from "react";
 import axios from "axios";
 import CustomMarker from "@/component/CustomMarker";
 import CustomPopup from "@/component/CustomPopup";
-import LoginPage from "@/component/LoginPage";
+// import LoginPage from "@/component/LoginPage";
 import { useAuth } from "@/component/AuthContext";
+
 
 const Home = ({ markers }) => {
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
@@ -15,7 +16,10 @@ const Home = ({ markers }) => {
   const [desc, setDesc] = useState('');
   const [rating, setRating] = useState(1);
 
-  const { user } = useAuth();
+  const {userId } = useAuth();
+  const {username} = useAuth();
+
+
 
 
 const handleAddClick = (e) => {
@@ -39,8 +43,8 @@ const handleAddClick = (e) => {
     e.preventDefault();
  
     const newMarker = {
-      name: 'Aboud', // todo user name
-      userId: user,
+      name: username, 
+      userId: userId,
       title,
       desc,
       rating,
@@ -59,8 +63,8 @@ const handleAddClick = (e) => {
 
 
   return (
-    <div>
-      <LoginPage />
+    <div className="map">
+      {/* <LoginPage /> */}
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -73,7 +77,7 @@ const handleAddClick = (e) => {
        onDblClick={handleAddClick}
       >
        {markers
-          .filter((marker) => marker.userId === user) // Filter markers by user ID
+          .filter((marker) => marker.userId === userId) // Filter markers by user ID
           .map((marker) => (
             <Fragment key={marker._id}>
               <CustomMarker
@@ -103,19 +107,19 @@ const handleAddClick = (e) => {
             closeOnClick={false}
             onClose={handleClosePopup}
           >
-            <div>
-              <form onSubmit={handleSubmit}>
-                <label>Title</label>
-                <input
+            <div className="card">
+              <form className="form" onSubmit={handleSubmit}>
+                <label className="label">Title</label>
+                <input className="input"
                   placeholder="Enter a title"
                   onChange={(e) => setTitle(e.target.value)}
                 />
-                <label>Review</label>
+                <label className="label">Review</label>
                 <textarea
                   placeholder="Say us something about this place."
                   onChange={(e) => setDesc(e.target.value)}
                 />
-                <label>Rating</label>
+                <label className="label">Rating</label>
                 <select onChange={(e) => setRating(e.target.value)}>
                   <option value="1">1</option>
                   <option value="2">2</option>
