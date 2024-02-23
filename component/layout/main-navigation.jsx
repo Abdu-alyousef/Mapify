@@ -3,8 +3,13 @@ import Link from "next/link";
 import classes from "./main-navigation.module.css";
 import { useAuth } from "../AuthContext";
 
+
+
+
 function MainNavigation() {
   const { session, logout } = useAuth();
+
+
 
   return (
     <header className={classes.header}>
@@ -21,6 +26,7 @@ function MainNavigation() {
           {session && (
             <li>
               <button onClick={logout}>Logout</button>
+             
             </li>
           )}
         </ul>

@@ -47,7 +47,6 @@ const AuthForm = () => {
       const result = await handleLogin(formData.email, formData.password);
       if (!result.error) {
         router.replace("/");
-        // setLoading(false);
       }
     
     } else {
@@ -65,7 +64,7 @@ const AuthForm = () => {
 
   if (loading) {
     return (
-      <div className={classes.spinner}>
+      <div className="spinner">
         <ClipLoader
           color={"#38015c"}
           loading={loading}

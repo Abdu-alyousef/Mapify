@@ -28,17 +28,17 @@ const MapComponent = () => {
   }, [session]);
 
   useEffect(() => {
-    async function fetchMarkers() {
-      try {
-        const apiUrl = "http://localhost:3000/api/markers";
-        const response = await axios.get(apiUrl);
-        setMarkers(response.data);
-      } catch (error) {
-        console.error("Error fetching markers:", error);
-      }
+    if (userId) {
+      axios
+        .get(`/api/markers?userId=${userId}`)
+        .then((response) => {
+          setMarkers(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching markers:", error);
+        });
     }
-    fetchMarkers();
-  }, []);
+  }, [userId]);
 
   const handleAddClick = (e) => {
     const { lng, lat } = e.lngLat;
@@ -69,14 +69,14 @@ const MapComponent = () => {
     };
     console.log(newMarker);
     try {
-      const Uri = "http://localhost:3000/api/addMarker";
-      const res = await axios.post(Uri, newMarker);
+      const res = await axios.post("/api/addMarker", newMarker);
       setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
       setTitle("");
       setDesc("");
       setRating("");
       setCurrentPlaceId(null);
       setNewPlace(null);
+      
     } catch (err) {
       console.error("Error adding marker:", err);
     }
@@ -98,7 +98,6 @@ const MapComponent = () => {
 
   return (
     <div className="map">
-      {/* <LoginPage /> */}
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -110,48 +109,25 @@ const MapComponent = () => {
         mapStyle="mapbox://styles/mapbox/streets-v9"
         onDblClick={handleAddClick}
       >
-        {markers
-          .filter((marker) => marker.userId === userId)
-          .map((marker) => (
-            <Fragment key={marker._id}>
-              <CustomMarker
+        {markers.map((marker) => (
+          <Fragment key={marker.userId}>
+            <CustomMarker
+              longitude={marker.longitude}
+              latitude={marker.latitude}
+              offsetLeft={-20}
+              offsetTop={-10}
+              markerId={marker._id}
+              onMarkerClick={handleMarkerClick}
+            />
+            {marker._id === currentPlaceId && (
+              <CustomPopup
                 longitude={marker.longitude}
                 latitude={marker.latitude}
-                offsetLeft={-20}
-                offsetTop={-10}
-                markerId={marker._id}
-                onMarkerClick={handleMarkerClick}
+                marker={marker}
               />
-              {marker._id === currentPlaceId && (
-                <CustomPopup
-                  longitude={marker.longitude}
-                  latitude={marker.latitude}
-                  marker={marker}
-                />
-              )}
-            </Fragment>
-          ))}{" "}
-        {markers
-          .filter((marker) => marker.userId === userId) // Filter markers by user ID
-          .map((marker) => (
-            <Fragment key={marker._id}>
-              <CustomMarker
-                longitude={marker.longitude}
-                latitude={marker.latitude}
-                offsetLeft={-20}
-                offsetTop={-10}
-                markerId={marker._id}
-                onMarkerClick={handleMarkerClick}
-              />
-              {marker._id === currentPlaceId && (
-                <CustomPopup
-                  longitude={marker.longitude}
-                  latitude={marker.latitude}
-                  marker={marker}
-                />
-              )}
-            </Fragment>
-          ))}
+            )}
+          </Fragment>
+        ))}
         {newPlace && (
           <Popup
             longitude={newPlace.lng}
@@ -194,24 +170,3 @@ const MapComponent = () => {
 };
 
 export default MapComponent;
-
-// export async function getServerSideProps() {
-//   try {
-//     const apiUrl = "http://localhost:3000/api/markers";
-//     const response = await axios.get(apiUrl);
-//     const markers = response.data;
-
-//     return {
-//       props: {
-//         markers,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching markers:", error);
-//     return {
-//       props: {
-//         markers: [],
-//       },
-//     };
-//   }
-// }
