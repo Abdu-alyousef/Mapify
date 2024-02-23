@@ -42,9 +42,9 @@ body {
 
 .label {
   width: max-content;
-  color: red;
+  color: #38015c;
   font-size: 13px;
-  border-bottom: .5px solid gold;
+  border-bottom: .5px solid #38015c;
   margin: 3px 0;
 }
 
@@ -59,16 +59,29 @@ body {
 
 .input::placeholder, textarea::placeholder, select{
   font-size: 12px;
-  color: #555;
+  color: #000;
 }
 
 .input ,textarea ,select{
-  padding: 0 5px;
+  padding: 2px 5px;
   border: 1px solid #555;
 }
 
-button{
+
+.btn {
+  margin-top: 5px;
   cursor: pointer;
+  font: inherit;
+  color: white;
+  background-color: #38015c;
+  border: 1px solid #38015c;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.btn:hover {
+  background-color: #873abb;
+  border-color: #873abb;
 }
 
 .map{

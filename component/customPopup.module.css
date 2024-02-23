@@ -9,14 +9,14 @@
 
 .card_label {
   width: max-content;
-  color: red;
+  color: #38015c;
   font-size: 13px;
-  border-bottom: .5px solid gold;
+  border-bottom: .5px solid #38015c;
   margin: 3px 0;
 }
 
-.review .username {
-  font-size: 14px;
+.username {
+  font-size: 12px;
 }
 
 .star {
@@ -26,5 +26,8 @@
 .date {
   font-size: 12px;
 }
-
+.username b, .card h4, .review{
+  font-size: 13px;
+ 
+}
 
