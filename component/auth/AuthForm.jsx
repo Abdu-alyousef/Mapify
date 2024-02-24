@@ -52,14 +52,16 @@ const AuthForm = () => {
     } else {
       try {
         const response = await axios.post("/api/register", formData);
-        await handleLogin(formData.email, formData.password);
+        const result = await handleLogin(formData.email, formData.password);
+        if (!result.error) {
+          router.replace("/");
+        }
        
-
       } catch (error) {
         console.log("Authentication failed:", error);
       } finally {
         setLoading(false);
-        router.replace("/");
+      
       }
     }
   };
